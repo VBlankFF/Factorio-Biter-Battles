@@ -1,18 +1,32 @@
 local Public = {
     name = {
         type = "label",
-        caption = "<Name displayed in gui>",
-        tooltip = "<Short description of the mode",
+        caption = "Bias Biter Sends",
+        tooltip = "I'm testing!! Don't look yet!",
     },
     config = {
-        [1] = {name = "<name of this element>" , type = "<type of this element>"},
-        [2] = {name = "example_1", type = "textfield", text = "200", numeric = true, width = 40},
-        [3] = {name = "example_2", type = "checkbox", caption = "Some checkbox", state = false},
-        [9] = {name = "example_custom_button_name", type = "button", caption = "Custom button", width = 60}
+        [1] = {name = "bias_random", type = "checkbox", caption = "Random", state = true},
+        [2] = {name = "bias_main", type = "checkbox", caption = "Main", state = false},
+        [3] = {name = "bias_right", type = "checkbox", caption = "Right", state = false },
+        [4] = {name = "bias_left", type = "checkbox", caption = "Left", state = false}
     },
     button = {name = "apply", type = "button", caption = "Apply"},
     generate = function (config, player)
-        -- Will be called when the apply button is clicked
+        if config[1].state == true then
+            storage.active_special_games['bias_biter_sends'] = false
+        end
+        if config[2].state == true then
+            storage.active_special_games['bias_biter_sends'] = true
+            storage.special_games_variables['biter_bias'] = 'Main'
+        end
+        if config[3].state == true then
+            storage.active_special_games['bias_biter_sends'] = true
+            storage.special_games_variables['biter_bias'] = 'Right'
+        end
+        if config[4].state == true then
+            storage.active_special_games['bias_biter_sends'] = true
+            storage.special_games_variables['biter_bias'] = 'Left'
+        end
     end,
     gui_click = function (element, config, player)
         if element.name == "example_custom_button_name" then
