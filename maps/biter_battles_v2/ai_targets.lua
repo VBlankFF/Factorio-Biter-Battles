@@ -50,24 +50,6 @@ local function simple_random_sample(population_list)
     return nil
 end
 
-local function biased_random_sample(population_list, bias)
-    local population_size = #population_list
-    game.print({storage.rocket_silo["north"].position.x})
-    if population_size > 0 then
-        local random_index = math_random(1, population_size)
-        local individual = population_list[random_index]
-        for i = 0,10 do
-            random_index = math_random(1, population_size)
-            if individual.position.x < population_list[random_index].position.x and bias == 'Right' then individual = population_list[random_index]
-            elseif individual.position.x > population_list[random_index].position.x and bias == 'Left' then individual = population_list[random_index]
-            -- I don't actually know where main is relative to the coordinate grid
-            elseif bias == 'Main' and population_list[random_index] < 256 then return population_list[random_index] end
-        end
-        return individual
-    end
-    return nil
-end
-
 function Public.start_tracking(entity)
     if not entity then
         return
@@ -110,16 +92,16 @@ end
 script.on_event(defines.events.on_object_destroyed, on_object_destroyed)
 
 function Public.get_random_target(force_name)
-    local targets = storage.ai_targets[force_name]
-    local available_list = targets.available_list
+    local available_list
+    if (storage.active_special_games['bias_biter_sends'] and #storage.special_games_variables['biter_targets'] > 0) then
+        available_list = storage.special_games_variables['biter_targets']
+    else
+        local targets = storage.ai_targets[force_name]
+        available_list = targets.available_list
+    end
     local first_entity, second_entity
-    if storage.active_special_games['bias_biter_sends'] then
         first_entity = simple_random_sample(available_list)
         second_entity = simple_random_sample(available_list)
-    else
-        first_entity = biased_random_sample(available_list, storage.special_games_variables['biter_bias'])
-        second_entity = biased_random_sample(available_list, storage.special_games_variables['biter_bias'])
-    end
     if not first_entity or not second_entity then
         return nil
     end

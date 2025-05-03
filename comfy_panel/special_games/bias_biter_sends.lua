@@ -1,19 +1,31 @@
 local function generate_bias_biter_sends(states)
     if states[1] == true then
         storage.active_special_games['bias_biter_sends'] = true
-        storage.special_games_variables['biter_bias'] = 'Main'
-    elseif states[2] == true then
-        storage.active_special_games['bias_biter_sends'] = true
-        storage.special_games_variables['biter_bias'] = 'Right'
-    elseif states[3] == true then
-        storage.active_special_games['bias_biter_sends'] = true
-        storage.special_games_variables['biter_bias'] = 'Left'
+        storage.special_games_variables['biter_targets'] = {}
     else
         storage.active_special_games['bias_biter_sends'] = false
-        storage.special_games_variables['biter_bias'] = nil
+        storage.special_games_variables['biter_targets'] = {}
     end
-    game.print({storage.special_games_variables['biter_bias']})
+    game.print({"yippie"})
 end
+
+local function player_added_tag(tag, force, player_index, name, tick)
+    local positions_table = storage.special_games_variables['biter_targets']
+    if not storage.special_games_variables['biter_targets'] then
+        return
+    end
+    if tag.valid then
+        if tag.position.y < 0 and force == "south" then
+        elseif tag.position.y > 0 and force == "north" then
+            table.insert(positions_table, { position = tag.position })
+        end
+        game.print("it work")
+    else
+        game.print("something broke")
+    end
+end
+
+script.on_event(defines.events.on_chart_tag_added, player_added_tag)
 
 local Public = {
     name = {
@@ -22,16 +34,12 @@ local Public = {
         tooltip = "I'm testing!! Don't look yet!",
     },
     config = {
-        [1] = {name = "bias_main", type = "checkbox", caption = "Main", state = false},
-        [2] = {name = "bias_right", type = "checkbox", caption = "Right", state = false },
-        [3] = {name = "bias_left", type = "checkbox", caption = "Left", state = false}
+        [1] = {name = "enable", type = "checkbox", caption = "Enable", state = false},
     },
     button = {name = "apply", type = "button", caption = "Apply"},
     generate = function (config, player)
         local states = {
-            config["bias_main"].state,
-            config["bias_right"].state,
-            config["bias_left"].state
+            config["enable"].state
         }
 
         generate_bias_biter_sends(states)
