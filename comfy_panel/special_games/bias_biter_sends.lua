@@ -1,3 +1,20 @@
+local function generate_bias_biter_sends(states)
+    if states[1] == true then
+        storage.active_special_games['bias_biter_sends'] = true
+        storage.special_games_variables['biter_bias'] = 'Main'
+    elseif states[2] == true then
+        storage.active_special_games['bias_biter_sends'] = true
+        storage.special_games_variables['biter_bias'] = 'Right'
+    elseif states[3] == true then
+        storage.active_special_games['bias_biter_sends'] = true
+        storage.special_games_variables['biter_bias'] = 'Left'
+    else
+        storage.active_special_games['bias_biter_sends'] = false
+        storage.special_games_variables['biter_bias'] = nil
+    end
+    game.print("biter bias:", storage.active_special_games["bias_biter_sends"])
+end
+
 local Public = {
     name = {
         type = "label",
@@ -11,26 +28,14 @@ local Public = {
     },
     button = {name = "apply", type = "button", caption = "Apply"},
     generate = function (config, player)
-        if config["bias_main"].state == true then
-            storage.active_special_games['bias_biter_sends'] = true
-            storage.special_games_variables['biter_bias'] = 'Main'
-        elseif config["bias_right"].state == true then
-            storage.active_special_games['bias_biter_sends'] = true
-            storage.special_games_variables['biter_bias'] = 'Right'
-        elseif config["bias_left"].state == true then
-            storage.active_special_games['bias_biter_sends'] = true
-            storage.special_games_variables['biter_bias'] = 'Left'
-        else
-            storage.active_special_games['bias_biter_sends'] = false
-            storage.special_games_variables['biter_bias'] = nil
-        end
-        game.print("biter bias:", storage.active_special_games["bias_biter_sends"])
+        local states = {
+            config["bias_main"].state,
+            config["bias_right"].state,
+            config["bias_left"].state
+        }
+
+        generate_bias_biter_sends(states)
     end,
-    gui_click = function (element, config, player)
-        if element.name == "example_custom_button_name" then
-        -- if there are custom buttons in the special game config, add the handler code here
-        end
-    end
 }
 
 return Public
