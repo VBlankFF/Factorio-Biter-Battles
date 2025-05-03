@@ -12,7 +12,7 @@ local function generate_bias_biter_sends(states)
         storage.active_special_games['bias_biter_sends'] = false
         storage.special_games_variables['biter_bias'] = nil
     end
-    game.print("biter bias:", storage.active_special_games["bias_biter_sends"])
+    game.print({storage.special_games_variables['biter_bias']})
 end
 
 local Public = {
