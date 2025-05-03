@@ -52,6 +52,7 @@ end
 
 local function biased_random_sample(population_list, bias)
     local population_size = #population_list
+    game.print({storage.rocket_silo["north"].position.x})
     if population_size > 0 then
         local random_index = math_random(1, population_size)
         local individual = population_list[random_index]
