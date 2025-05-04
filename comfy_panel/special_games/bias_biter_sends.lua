@@ -9,19 +9,19 @@ local function generate_bias_biter_sends(states)
     game.print({"yippie"})
 end
 
-local function player_added_tag(tag, force, player_index, name, tick)
-    local positions_table = storage.special_games_variables['biter_targets']
-    if not storage.special_games_variables['biter_targets'] then
+local function player_added_tag(event)
+    if not storage.active_special_games['bias_biter_sends'] then
         return
     end
+    local tag = event.tag
+    local force = tag.force.name
+    local positions_table = storage.special_games_variables['biter_targets']
     if tag.valid then
         if tag.position.y < 0 and force == "south" then
+            table.insert(positions_table, { position = tag.position })
         elseif tag.position.y > 0 and force == "north" then
             table.insert(positions_table, { position = tag.position })
         end
-        game.print("it work")
-    else
-        game.print("something broke")
     end
 end
 
